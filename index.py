@@ -1,26 +1,25 @@
 import requests
 from bs4 import BeautifulSoup
+import csv
 
 # to run cell # %%
 
-URL = "https://www.artrabbit.com/all-listings/united-kingdom/birmingham?page={page_number}"
+CITY = "birmingham"
+URL = "https://www.artrabbit.com/all-listings/united-kingdom/{city}?page={page_number}"
 
 page = requests.get(URL)
 
 
 def getEventDetails(article):
     category = article.find(class_="b_categorical-heading").text
-    # print(category.text)
 
     title = article.find_all(class_="b_small-heading")[0].text
     date = article.find_all(class_="b_small-heading")[1].text
-    # print(title.text, date.text)
 
     venue = article.find_all(class_="b_instructional-text")[0].text
     location = article.find_all(class_="b_instructional-text")[1].text
 
     return category, title, date, venue, location
-    # print(venue.text, location.text)
 
 
 def getEventLink(article):
@@ -29,14 +28,18 @@ def getEventLink(article):
 
 
 def getEventImage(article):
-    image = article.find("picture").find("img")
-    image_src = image.get("src")
-    image_alt = image.get("alt")
-    return image_alt, image_src
+    picture = article.find("picture")
+    if picture:
+        image = picture.find("img")
+        image_src = image.get("src")
+        image_alt = image.get("alt")
+        return image_src, image_alt
 
 
-for page in range(1, 3):
-    r = requests.get(URL.format(page_number=str(page)))
+events = []
+
+for page in range(1, 20):
+    r = requests.get(URL.format(page_number=str(page), city=CITY))
     soup = BeautifulSoup(r.content, "html.parser")
 
     content = soup.find("div", class_="m_listing-items_section")
@@ -47,6 +50,35 @@ for page in range(1, 3):
     else:
         print(f"page number: {page}")
         for article in articles:
-            print(getEventDetails(article))
-            print(getEventLink(article))
-            print(getEventImage(article))
+            d = {}
+            details = getEventDetails(article)
+            link = getEventLink(article)
+            image = getEventImage(article)
+            d["Category"] = details[0]
+            d["Title"] = details[1]
+            d["Date"] = details[2]
+            d["Venue"] = details[3]
+            d["Locations"] = details[4]
+            d["Link"] = link
+            if image:
+                d["Image Src"] = image[0]
+                d["Image Alt"] = image[1]
+            events.append(d)
+
+filename = "events.csv"
+with open(filename, "w", newline="") as f:
+    w = csv.DictWriter(
+        f,
+        [
+            "Category",
+            "Title",
+            "Date",
+            "Venue",
+            "Locations",
+            "Link",
+            "Image Src",
+            "Image Alt",
+        ],
+    )
+    w.writeheader(),
+    w.writerows(events),
