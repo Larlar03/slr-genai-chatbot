@@ -1,11 +1,18 @@
+import os
+import sys
 import requests
 from bs4 import BeautifulSoup
 import csv
+from dotenv import load_dotenv, find_dotenv
 
-# to run cell # %%
+# Get the directory path of the current script and find the .env file in it or its parent directories
+dotenv_path = os.path.join(os.path.dirname(__file__), "..", ".env")
+# Load the environment variables from the .env file
+_ = load_dotenv(dotenv_path)
+# Access the URL variable from the environment
+URL = os.environ.get("URL")
 
-CITY = "london"
-URL = "https://www.artrabbit.com/all-listings/united-kingdom/{city}?page={page_number}"
+# # to run cell # %%
 
 page = requests.get(URL)
 
@@ -39,9 +46,8 @@ def getEventImage(article):
 events = []
 
 for page in range(1, 20):
-    r = requests.get(URL.format(page_number=str(page), city=CITY))
+    r = requests.get(URL.format(page_number=str(page), city="london"))
     soup = BeautifulSoup(r.content, "html.parser")
-
     content = soup.find("div", class_="m_listing-items_section")
     articles = content.find_all("article")
 
