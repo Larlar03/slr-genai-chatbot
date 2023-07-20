@@ -4,7 +4,7 @@ import csv
 
 # to run cell # %%
 
-CITY = "birmingham"
+CITY = "london"
 URL = "https://www.artrabbit.com/all-listings/united-kingdom/{city}?page={page_number}"
 
 page = requests.get(URL)
@@ -65,7 +65,7 @@ for page in range(1, 20):
                 d["Image Alt"] = image[1]
             events.append(d)
 
-filename = "events.csv"
+filename = "documents/events.csv"
 with open(filename, "w", newline="") as f:
     w = csv.DictWriter(
         f,
