@@ -3,7 +3,7 @@ import sys
 import requests
 from bs4 import BeautifulSoup
 import csv
-from dotenv import load_dotenv, find_dotenv
+from dotenv import load_dotenv
 
 dotenv_path = os.path.join(
     os.path.dirname(__file__), "..", ".env"
@@ -53,15 +53,22 @@ def getEventDescription(event_link):
         .find("p")
     )
 
-    if about:
-        description = introduction.text + "\n" + about.text
-    else:
+    description = ""
+
+    if about and introduction:
+        description = introduction.text + " " + about.text
+    elif introduction and not about:
         description = introduction.text
+    elif about and not introduction:
+        description = about.text
+    else:
+        description = "No description available."
+
     return description
 
 
 for page in range(1, 20):
-    r = requests.get(URL.format(page_number=str(page), city="birmingham"))
+    r = requests.get(URL.format(page_number=str(page), city="london"))
     soup = BeautifulSoup(r.content, "html.parser")
     content = soup.find("div", class_="m_listing-items_section")
     articles = content.find_all("article")
