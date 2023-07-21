@@ -1,1 +1,1 @@
-# artrbt-genai
+# artrbt-genai-chatbot
