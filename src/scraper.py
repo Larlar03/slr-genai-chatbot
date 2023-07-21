@@ -29,7 +29,8 @@ def getEventDetails(article):
 
 
 def getEventLink(article):
-    link = article.find("a").get("href")
+    path = article.find("a").get("href")
+    link = "https://www.artrabbit.com" + path
     return link
 
 
@@ -37,13 +38,14 @@ def getEventImage(article):
     picture = article.find("picture")
     if picture:
         image = picture.find("img")
-        image_src = image.get("src")
+        src = image.get("src")
+        image_src = src[2:]
         image_alt = image.get("alt")
         return image_src, image_alt
 
 
 def getEventDescription(event_link):
-    event_page = requests.get(EVENT_URL.format(event_link=event_link))
+    event_page = requests.get(event_link)
     soup = BeautifulSoup(event_page.content, "html.parser")
 
     introduction = soup.find("p", class_="b_standfirst")
