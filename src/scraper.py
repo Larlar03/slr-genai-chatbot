@@ -1,117 +1,41 @@
 import os
-import sys
-import requests
-from bs4 import BeautifulSoup
-import csv
 from dotenv import load_dotenv
+from langchain.document_loaders import UnstructuredPDFLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.vectorstores import FAISS
+from pathlib import Path
 
-dotenv_path = os.path.join(
-    os.path.dirname(__file__), "..", ".env"
-)  # get dir path of current script and find the .env file in it or its parent directories
-_ = load_dotenv(dotenv_path)  # Load the environment variables from the .env file
-URL = os.environ.get("URL")
-EVENT_URL = os.environ.get("EVENT_URL")
+# get api key
+current_dir = os.getcwd()
+dotenv_path = os.path.join(current_dir, ".env")
+_ = load_dotenv(dotenv_path)
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 
-page = requests.get(URL)
-events = []
+output_directory = "documents/faiss_db"
+embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
 
+loader = UnstructuredPDFLoader("documents/pdfs/photography.pdf")
+pages = loader.load()
 
-def getEventDetails(article):
-    category = article.find(class_="b_categorical-heading").text
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=350,
+    chunk_overlap=25,
+)
+docs = text_splitter.split_documents(pages)
 
-    title = article.find_all(class_="b_small-heading")[0].text
-    date = article.find_all(class_="b_small-heading")[1].text
+folder = Path(output_directory)
+if folder.exists():
+    for file in folder.glob("*"):
+        file.unlink()  # remove all files and subdirectories
+else:
+    folder.mkdir(parents=True, exist_ok=True)
 
-    venue = article.find_all(class_="b_instructional-text")[0].text
-    location = article.find_all(class_="b_instructional-text")[1].text
+vectordb = FAISS.from_documents(
+    docs,
+    embeddings,
+)
 
-    return category, title, date, venue, location
+vectordb.save_local(output_directory)
 
-
-def getEventLink(article):
-    path = article.find("a").get("href")
-    link = "https://www.artrabbit.com" + path
-    return link
-
-
-def getEventImage(article):
-    picture = article.find("picture")
-    if picture:
-        image = picture.find("img")
-        src = image.get("src")
-        image_src = src[2:]
-        image_alt = image.get("alt")
-        return image_src, image_alt
-
-
-def getEventDescription(event_link):
-    event_page = requests.get(event_link)
-    soup = BeautifulSoup(event_page.content, "html.parser")
-
-    introduction = soup.find("p", class_="b_standfirst")
-    about = (
-        soup.find("section", class_="m_main-copy")
-        .find("div", class_="l_inner-grid")
-        .find("p")
-    )
-
-    description = ""
-
-    if about and introduction:
-        description = introduction.text + " " + about.text
-    elif introduction and not about:
-        description = introduction.text
-    elif about and not introduction:
-        description = about.text
-    else:
-        description = "No description available."
-
-    return description
-
-
-for page in range(1, 20):
-    r = requests.get(URL.format(page_number=str(page), city="london"))
-    soup = BeautifulSoup(r.content, "html.parser")
-    content = soup.find("div", class_="m_listing-items_section")
-    articles = content.find_all("article")
-
-    if not articles:
-        break
-    else:
-        print(f"page number: {page}")
-        for article in articles:
-            d = {}
-            details = getEventDetails(article)
-            link = getEventLink(article)
-            image = getEventImage(article)
-            description = getEventDescription(link)
-            d["Category"] = details[0]
-            d["Title"] = details[1]
-            d["Date"] = details[2]
-            d["Venue"] = details[3]
-            d["Locations"] = details[4]
-            d["Link"] = link
-            d["Description"] = description
-            if image:
-                d["Image Src"] = image[0]
-                d["Image Alt"] = image[1]
-            events.append(d)
-
-filename = "documents/events.csv"
-with open(filename, "w", newline="") as f:
-    w = csv.DictWriter(
-        f,
-        [
-            "Category",
-            "Title",
-            "Date",
-            "Venue",
-            "Locations",
-            "Link",
-            "Image Src",
-            "Image Alt",
-            "Description",
-        ],
-    )
-    w.writeheader(),
-    w.writerows(events),
+print(f"{len(docs)} docs saved to vector store")
