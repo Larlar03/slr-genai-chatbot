@@ -6,6 +6,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
 from langchain.memory import ConversationBufferMemory
+from langchain.memory import ConversationBufferWindowMemory
 from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import MongoDBChatMessageHistory
 
@@ -21,13 +22,17 @@ memory = ConversationBufferMemory(memory_key="chat_history", return_messages=Tru
 llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.5)
 
 message_history = MongoDBChatMessageHistory(
-    connection_string=MONGODB_URI, session_id="test-session"
+    connection_string=MONGODB_URI, session_id="exposure-session-3"
 )
 
-prompt_template = """You are a help assistant at www.artrabbit.com having a conversation with a person who is looking for something creative adn cultural to do.
-Use the following pieces of context to provide a concise answer to the question.
+prompt_template = """You a friendly chatbot with the aim to help new photographers. Your goal is to provide human-like responses based on the given context. Here are some guidelines to achieve that:
+1. Try to understand the context of the conversation and respond accordingly.
+2. Use casual language where you can
+3. Respond appropriately to greetings, gratitude, and casual language.
+4. Use humor and empathy when appropriate.
+Don't mention "base don the provded context" or "base don the evidence"
 If you don't know the answer, just say that you don't know, don't try to make up an answer.
-Chat History: {chat_history}
+{chat_history}
 Question: {question}
 Answer:"""
 
@@ -37,7 +42,6 @@ PROMPT = PromptTemplate.from_template(prompt_template)
 def load_vector_store():
     embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
     db = os.path.join(os.getcwd(), "documents/faiss_db")
-
     # load vector store
     vector_store = FAISS.load_local(db, embeddings)
     retriever = vector_store.as_retriever(search_kwargs={"k": 5})
@@ -64,17 +68,13 @@ def get_chat_history():
     print(message_history.messages)
 
 
-def get_chat_messages():
-    ...
-
-
 def prompt_openai():
     qa_chain = get_qa_chain()
-    question = "I want to go to an exhibition in July. Whats on?"
+    question = "What colour backdrop would be good for a summer inspired portrait?"
     response = qa_chain({"question": question})
     store_chat(question=question, response=response)
     print(response["answer"])
-    print(message_history.messages)
+    get_chat_history()
 
 
 prompt_openai()
