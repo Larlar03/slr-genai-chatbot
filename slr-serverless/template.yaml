@@ -17,7 +17,7 @@ Resources:
         StageName: dev
 
   SLRPromptFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Type: AWS::Serverless::Function
     Properties:
       CodeUri: openai_prompt/
       Handler: app.lambda_handler
@@ -26,24 +26,56 @@ Resources:
         - x86_64
       Events:
         SLRPrompt:
-          Type: HttpApi # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Type: HttpApi
           Properties:
             Path: /prompt
             Method: post
-            ApiId:
-              Ref: HttpApi
-      Environment:  # Add this section
+            ApiId: !Ref HttpApi
+      Environment:
         Variables:
           TABLE_NAME: !Ref SLRDynamoDBTable
+      Layers:
+        - !Ref LangChainLayer
+        - !Ref OpenAILayer
+        - !Ref FaissLayer
+        - !Ref NumpyLayer
 
   SLRDynamoDBTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: SLRChatHistory # Replace 'MyTable' with your desired table name
-        AttributeDefinitions:
-          - AttributeName: id
-            AttributeType: S   # Assuming the id is a string, change to 'N' for a number type
-        KeySchema:
-          - AttributeName: id
-            KeyType: HASH
-        BillingMode: PAY_PER_REQUEST
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: SLRChatHistory # Replace 'MyTable' with your desired table name
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S   # Assuming the id is a string, change to 'N' for a number type
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+  LangChainLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: layers/langchain_layer
+      CompatibleRuntimes:
+        - python3.10
+
+  OpenAILayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: layers/openai_layer
+      CompatibleRuntimes:
+        - python3.10
+
+  FaissLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: layers/faiss_layer
+      CompatibleRuntimes:
+        - python3.10
+
+  NumpyLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: layers/numpy_layer
+      CompatibleRuntimes:
+        - python3.10

@@ -60,16 +60,17 @@ def store_chat(question, response):
 
 
 def get_chat_history():
-    print(message_history.messages)
+    return message_history.messages
 
 
 def prompt_openai():
     qa_chain = get_qa_chain()
+    messages = get_chat_history()
     question = "What iso should I use?"
-    response = qa_chain({"question": question})
+    response = qa_chain({"question": question, "chat_history": messages})
     store_chat(question=question, response=response)
     print(response["answer"])
-    # get_chat_history()
+    # print(message_history.messages)
 
 
 prompt_openai()

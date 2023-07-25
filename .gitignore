@@ -1,5 +1,6 @@
 .env
 .aws-sam
+layers
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
