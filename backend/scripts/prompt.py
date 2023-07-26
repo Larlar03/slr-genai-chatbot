@@ -8,17 +8,16 @@ from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import MongoDBChatMessageHistory
 
-dotenv_path = os.path.join(os.getcwd(), ".env")
+dotenv_path = os.getdotenv_path = os.path.join(os.getcwd(), "backend/.env")
 _ = load_dotenv(dotenv_path)
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 MONGODB_URI = os.environ.get("MONGODB_URI")
 
 memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
-llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.5)
 
-message_history = MongoDBChatMessageHistory(
-    connection_string=MONGODB_URI, session_id="exposure-session-3"
+llm = ChatOpenAI(
+    model_name="gpt-3.5-turbo", temperature=0.5, openai_api_key=OPENAI_API_KEY
 )
 
 prompt_template = """You are a chatbot talking to a human who is a photographer. Your goal is to provide human-like responses to their question.
@@ -38,7 +37,7 @@ PROMPT = PromptTemplate.from_template(prompt_template)
 
 def load_vector_store():
     embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
-    db = os.path.join(os.getcwd(), "documents/faiss_db")
+    db = os.path.join(os.getcwd(), "backend/documents/faiss_db")
     vector_store = FAISS.load_local(db, embeddings)
     retriever = vector_store.as_retriever(search_kwargs={"k": 5})
 
@@ -54,22 +53,27 @@ def get_qa_chain():
     return qa_chain
 
 
-def store_chat(question, response):
-    message_history.add_user_message(question)
-    message_history.add_ai_message(response["answer"])
+def store_chat(history, question, response):
+    history.add_user_message(question)
+    history.add_ai_message(response["answer"])
 
 
-def get_chat_history():
-    print(message_history.messages)
+def get_chat_history(history):
+    return history.messages
 
 
-def prompt_openai():
+def prompt_openai(chatId, message):
+    message_history = MongoDBChatMessageHistory(
+        connection_string=MONGODB_URI, session_id=chatId
+    )
     qa_chain = get_qa_chain()
-    question = "What iso should I use?"
-    response = qa_chain({"question": question})
-    store_chat(question=question, response=response)
+    messages = get_chat_history(message_history)
+
+    question = message
+
+    response = qa_chain({"question": question, "chat_history": messages})
+
+    store_chat(message_history, question=question, response=response)
     print(response["answer"])
-    # get_chat_history()
-
-
-prompt_openai()
+    print(messages)
+    return response["answer"]
