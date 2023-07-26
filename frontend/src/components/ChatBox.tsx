@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { PromptAi } from 'src/hooks/PromptAi';
 import { Message } from 'src/types/Message';
 import MessageBox from './MessageBox';
 import LoadingMessage from './LoadingMessage';
@@ -20,6 +21,7 @@ const ChatBox = () => {
         });
         setLoading(true);
         console.log(messages);
+        PromptAi(message, `${import.meta.env.VITE_PROMPT_API}`);
         // const response = await ChatbotService.sendMessage(message);
         // Open the URL in the current tab
         setMessages((messages) => {
