@@ -15,6 +15,7 @@ OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 MONGODB_URI = os.environ.get("MONGODB_URI")
 
 memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+
 llm = ChatOpenAI(
     model_name="gpt-3.5-turbo", temperature=0.5, openai_api_key=OPENAI_API_KEY
 )
@@ -65,7 +66,6 @@ def prompt_openai(chatId, message):
     message_history = MongoDBChatMessageHistory(
         connection_string=MONGODB_URI, session_id=chatId
     )
-
     qa_chain = get_qa_chain()
     messages = get_chat_history(message_history)
 
@@ -76,6 +76,4 @@ def prompt_openai(chatId, message):
     store_chat(message_history, question=question, response=response)
     print(response["answer"])
     print(messages)
-
-
-prompt_openai("1", "What shutter speed should I use for sports shots?")
+    return response["answer"]

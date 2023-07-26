@@ -20,15 +20,13 @@ const ChatBox = () => {
             ];
         });
         setLoading(true);
-        console.log(messages);
-        PromptAi(message, `${import.meta.env.VITE_PROMPT_API}`);
-        // const response = await ChatbotService.sendMessage(message);
+        const response = await PromptAi(message, `${import.meta.env.VITE_PROMPT_API}`);
         // Open the URL in the current tab
         setMessages((messages) => {
             return [
                 ...messages,
                 {
-                    content: 'chatbox reponse here',
+                    content: response,
                     isSentByUser: false,
                 },
             ];
@@ -41,7 +39,7 @@ const ChatBox = () => {
             <div className='p-4 bg-white shadow-lg rounded-lg sm:h-screen sm:w-screen lg:h-auto lg:w-4/6 xl:w-[682px] grid grid-cols-1 grid-rows-[1fr,min-content]'>
                 <div className='flex flex-col mb-4 space-y-6'>
                     <div className='chat bg-green'>
-                        <div className='flex items-center space-x-4'>
+                        <div className='flex items-center space-x-4 mb-5'>
                             <img
                                 src='https://source.unsplash.com/600x600/?abstract'
                                 alt='User Avatar'

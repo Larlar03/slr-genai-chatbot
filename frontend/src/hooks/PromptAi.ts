@@ -4,6 +4,7 @@ import { PromptAiQuestion } from 'src/types/PromptAiQuestion';
 import { PromptAiResponse } from 'src/types/PromptAiResponse';
 
 export const PromptAi = async (messageString: string, apiUrl: string) => {
+    // Fix: keep id for session. May created id on re-render in component?
     const chatId = uuidv4();
 
     console.log(`Sending message: ${messageString}, chatId: ${chatId}`);
@@ -17,5 +18,5 @@ export const PromptAi = async (messageString: string, apiUrl: string) => {
         console.error(error);
     });
 
-    console.log(response);
+    return response?.data.answer;
 };
