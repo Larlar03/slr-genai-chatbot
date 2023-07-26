@@ -1,62 +1,58 @@
 {
-  "$schema": "./node_modules/nx/schemas/nx-schema.json",
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "nx-cloud",
-      "options": {
-        "cacheableOperations": ["build", "lint", "test", "e2e"],
-        "accessToken": "MmJmOWQ5MDQtMGY1My00ODBmLWFlNTctMmM5ZGM1MjFjMzY3fHJlYWQtd3JpdGU="
-      }
-    }
-  },
-  "targetDefaults": {
-    "build": {
-      "dependsOn": ["^build"],
-      "inputs": ["production", "^production"]
+    "$schema": "./node_modules/nx/schemas/nx-schema.json",
+    "tasksRunnerOptions": {
+        "default": {
+            "runner": "nx-cloud",
+            "options": {
+                "cacheableOperations": ["build", "lint", "test", "e2e"],
+                "accessToken": ""
+            }
+        }
     },
-    "e2e": {
-      "inputs": ["default", "^production"]
+    "targetDefaults": {
+        "build": {
+            "dependsOn": ["^build"],
+            "inputs": ["production", "^production"]
+        },
+        "e2e": {
+            "inputs": ["default", "^production"]
+        },
+        "test": {
+            "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"]
+        },
+        "lint": {
+            "inputs": ["default", "{workspaceRoot}/.eslintrc.json", "{workspaceRoot}/.eslintignore"]
+        }
     },
-    "test": {
-      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"]
+    "namedInputs": {
+        "default": ["{projectRoot}/**/*", "sharedGlobals"],
+        "production": [
+            "default",
+            "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
+            "!{projectRoot}/tsconfig.spec.json",
+            "!{projectRoot}/.eslintrc.json",
+            "!{projectRoot}/jest.config.[jt]s",
+            "!{projectRoot}/src/test-setup.[jt]s"
+        ],
+        "sharedGlobals": []
     },
-    "lint": {
-      "inputs": [
-        "default",
-        "{workspaceRoot}/.eslintrc.json",
-        "{workspaceRoot}/.eslintignore"
-      ]
-    }
-  },
-  "namedInputs": {
-    "default": ["{projectRoot}/**/*", "sharedGlobals"],
-    "production": [
-      "default",
-      "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
-      "!{projectRoot}/tsconfig.spec.json",
-      "!{projectRoot}/.eslintrc.json",
-      "!{projectRoot}/jest.config.[jt]s",
-      "!{projectRoot}/src/test-setup.[jt]s"
-    ],
-    "sharedGlobals": []
-  },
-  "generators": {
-    "@nx/react": {
-      "application": {
-        "style": "css",
-        "linter": "eslint",
-        "bundler": "vite",
-        "babel": true
-      },
-      "component": {
-        "style": "css"
-      },
-      "library": {
-        "style": "css",
-        "linter": "eslint",
-        "unitTestRunner": "jest"
-      }
-    }
-  },
-  "defaultProject": "frontend"
+    "generators": {
+        "@nx/react": {
+            "application": {
+                "style": "css",
+                "linter": "eslint",
+                "bundler": "vite",
+                "babel": true
+            },
+            "component": {
+                "style": "css"
+            },
+            "library": {
+                "style": "css",
+                "linter": "eslint",
+                "unitTestRunner": "jest"
+            }
+        }
+    },
+    "defaultProject": "frontend"
 }
