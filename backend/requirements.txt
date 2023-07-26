@@ -7,6 +7,8 @@ certifi==2023.7.22
 charset-normalizer==3.2.0
 click==8.1.6
 dataclasses-json==0.5.13
+dnspython==2.4.1
+faiss-cpu==1.7.4
 Flask==2.3.2
 Flask-Cors==4.0.0
 frozenlist==1.4.0
@@ -25,6 +27,7 @@ openai==0.27.8
 openapi-schema-pydantic==1.2.4
 packaging==23.1
 pydantic==1.10.12
+pymongo==4.4.1
 python-dotenv==1.0.0
 PyYAML==6.0.1
 requests==2.31.0
