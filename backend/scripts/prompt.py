@@ -6,7 +6,8 @@ from langchain.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
-from langchain.memory import MongoDBChatMessageHistory
+
+from scripts import database
 
 dotenv_path = os.getdotenv_path = os.path.join(os.getcwd(), "backend/.env")
 _ = load_dotenv(dotenv_path)
@@ -53,27 +54,14 @@ def get_qa_chain():
     return qa_chain
 
 
-def store_chat(history, question, response):
-    history.add_user_message(question)
-    history.add_ai_message(response["answer"])
-
-
-def get_chat_history(history):
-    return history.messages
-
-
 def prompt_openai(chatId, message):
-    message_history = MongoDBChatMessageHistory(
-        connection_string=MONGODB_URI, session_id=chatId
-    )
+    chat_history = database.get_chat_history(chatId)
+    print(chat_history)
     qa_chain = get_qa_chain()
-    messages = get_chat_history(message_history)
 
     question = message
+    response = qa_chain({"question": question, "chat_history": chat_history})
 
-    response = qa_chain({"question": question, "chat_history": messages})
-
-    store_chat(message_history, question=question, response=response)
+    database.store_chat(id=chatId, question=question, answer=response["answer"])
     print(response["answer"])
-    print(messages)
     return response["answer"]

@@ -1,7 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
-
 from scripts import prompt
 
 app = Flask(__name__)
@@ -21,7 +20,7 @@ def post():
     id = data["chatId"]
     question = data["message"]
     response = prompt.prompt_openai(id, question)
-    return jsonify({"response": response})
+    return jsonify({"answer": response})
 
 
 if __name__ == "__main__":
