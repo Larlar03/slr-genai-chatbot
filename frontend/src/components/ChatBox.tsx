@@ -4,7 +4,7 @@ import { Message } from 'src/types/Message';
 import MessageBox from './MessageBox';
 import LoadingMessage from './LoadingMessage';
 
-const ChatBox = () => {
+const ChatBox = ({ sessionId }: { sessionId: string }) => {
     const [message, setMessage] = useState<string>('');
     const [messages, setMessages] = useState<Message[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
@@ -19,9 +19,11 @@ const ChatBox = () => {
                 },
             ];
         });
+
         setLoading(true);
-        const response = await PromptAi(message, `${import.meta.env.VITE_PROMPT_API}`);
-        // Open the URL in the current tab
+
+        const response = await PromptAi(message, sessionId, `${import.meta.env.VITE_PROMPT_API}`);
+
         setMessages((messages) => {
             return [
                 ...messages,

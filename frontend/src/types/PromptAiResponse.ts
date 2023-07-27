@@ -1,3 +1,3 @@
 export interface PromptAiResponse {
-    message: string;
+    response: string;
 }
