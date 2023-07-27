@@ -23,8 +23,14 @@ const MessageBox = ({ message }: { message: Message }) => {
                 <div className='w-full flex items-end justify-end space-x-3 space-y-3'>
                     <div className='p-2 bg-blue-100 rounded-lg'>
                         {/* <p className='text-blue-600'>{message.content}</p> */}
-                        {formattedResponse?.map((line) => {
-                            return line === '' ? <br /> : <p className='text-blue-600'>{line}</p>;
+                        {formattedResponse?.map((line: string, i) => {
+                            return line === '' ? (
+                                <br />
+                            ) : (
+                                <p key={i} className='text-blue-600'>
+                                    {line}
+                                </p>
+                            );
                         })}
                     </div>
                     <img

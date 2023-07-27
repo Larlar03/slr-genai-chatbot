@@ -1,8 +1,7 @@
 import axios from 'axios';
 import { PromptAiQuestion } from 'src/types/PromptAiQuestion';
-import { PromptAiResponse } from 'src/types/PromptAiResponse';
 
-export const PromptAi = async (messageString: string, chatId: string, apiUrl: string): Promise<PromptAiResponse> => {
+export const PromptAi = async (messageString: string, chatId: string, apiUrl: string): Promise<string> => {
     console.log(`Sending message: ${messageString}, chatId: ${chatId}`);
 
     const requestBody: PromptAiQuestion = {
