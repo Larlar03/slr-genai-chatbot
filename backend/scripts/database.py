@@ -6,7 +6,6 @@ dotenv_path = os.getdotenv_path = os.path.join(os.getcwd(), "backend/.env")
 _ = load_dotenv(dotenv_path)
 
 MONGODB_URI = os.environ.get("MONGODB_URI")
-
 client = pymongo.MongoClient(MONGODB_URI)
 
 dblist = client.list_database_names()
@@ -67,7 +66,3 @@ def get_chat_history(id):
 
     print(messages)
     return messages
-
-
-# get_chat_history("0")
-# store_chat("2", "hello", "there")
