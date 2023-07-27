@@ -11,54 +11,63 @@ client = pymongo.MongoClient(MONGODB_URI)
 
 dblist = client.list_database_names()
 
-slr_db = None
-slr_collection = None
-chat = None
-
 
 def initialise_db():
-    global slr_db
-    global slr_collection
-    global count
-
-    data_stucture = {
-        "_id": "string",
-        "messages": [
-            {"question": "string", "answer": "string"},
-        ],
-    }
-
     if "slr" in dblist:
-        slr_db = client["slr"]
-        slr_collection = slr_db["chat_history"]
+        db = client["slr"]
+        collection = db["chat_history"]
     else:
-        slr_db = client["slr"]
-        slr_collection = slr_db["chat_history"]
-        slr_collection.insert_one(data_stucture)
-        print("Created an slr database with chat_history collection")
-        return slr_collection
+        db = client["slr"]
+        collection = db["chat_history"]
+        collection.insert_one(
+            {
+                "_id": "0",
+                "messages": [],
+            }
+        )
+        print("Created database and collection")
+
+    return collection
 
 
-def store_chat(id, question, response):
-    slr_db = client["slr"]
-    slr_collection = slr_db["chat_history"]
+def store_chat(id, question, answer):
+    db = client["slr"]
+    collection = db["chat_history"]
 
-    document = {"question": question, "answer": response}
+    new_data = {"question": question, "answer": answer}
 
-    slr_collection.update_one(
-        {"_id": id},
-        {"$push": {"messages": document}},
-    )
+    document = collection.find_one({"_id": id})
+
+    if document:
+        collection.update_one(
+            {"_id": id},
+            {"$push": {"messages": new_data}},
+        )
+        print(f"Updated document: {id}")
+    else:
+        collection.insert_one({"_id": id, "messages": [new_data]})
+        print(f"Created new document: {id}")
 
 
 def get_chat_history(id):
-    global slr_collection
+    collection = initialise_db()
+    chat = collection.find_one({"_id": id})
 
-    initialise_db()
-    chat = slr_collection.find_one({"_id": id})
-    messages = chat.get("messages", {})
+    if chat:
+        messages = chat.get("messages", [])
+    else:
+        collection.insert_one(
+            {
+                "_id": id,
+                "messages": [],
+            }
+        )
+        chat = collection.find_one({"_id": id})
+        messages = chat.get("messages", [])
+
+    print(messages)
     return messages
 
 
-# get_chat_history("string")
-store_chat("string", "hello", "world")
+# get_chat_history("0")
+# store_chat("2", "hello", "there")
