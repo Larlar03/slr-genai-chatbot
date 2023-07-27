@@ -1,4 +1,6 @@
+import { PromptAiResponse } from './PromptAiResponse';
+
 export interface Message {
-    content: string;
+    content: PromptAiResponse | string;
     isSentByUser: boolean;
 }
