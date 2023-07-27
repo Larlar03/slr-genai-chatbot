@@ -7,7 +7,7 @@ from langchain.prompts import PromptTemplate
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
 
-import database
+from scripts import database
 
 dotenv_path = os.getdotenv_path = os.path.join(os.getcwd(), "backend/.env")
 _ = load_dotenv(dotenv_path)
