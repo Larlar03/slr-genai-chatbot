@@ -9,7 +9,7 @@ from langchain.chains import ConversationalRetrievalChain
 
 from scripts import database
 
-dotenv_path = os.getdotenv_path = os.path.join(os.getcwd(), "backend/.env")
+dotenv_path = os.getdotenv_path = os.path.join(os.getcwd(), ".env")
 _ = load_dotenv(dotenv_path)
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
