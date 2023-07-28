@@ -8,18 +8,18 @@ const MessageBox = ({ message }: { message: Message }) => {
     return (
         <>
             {message.isSentByUser && (
-                <div className='flex items-end justify-end w-[99%]'>
-                    <div className='p-2 bg-[#F8F6F8] rounded-lg '>
+                <div className='w-[99%] flex items-end justify-end '>
+                    <div className='bg-[#F8F6F8] rounded-lg p-2'>
                         <p className='text-gray-900'>{message.content}</p>
                     </div>
                 </div>
             )}
             {!message.isSentByUser && (
-                <div className='flex flex-row items-end space-x-3 w-[99%] my-4'>
+                <div className='w-[99%] flex flex-row items-end space-x-3 my-4'>
                     <div>
-                        <div className='w-10 h-10 bg-gradient-to-r from-[#e0c3fc] to-[#8ec5fc] rounded-full' />
+                        <div className='bg-gradient-to-r from-[#e0c3fc] to-[#8ec5fc] w-10 h-10 rounded-full' />
                     </div>
-                    <div className='p-2 bg-[#F1F0FF] rounded-lg rounded-bl-none'>
+                    <div className='bg-[#F1F0FF] rounded-lg rounded-bl-none p-2 '>
                         {formattedResponse?.map((line: string, i) => {
                             return line === '' ? (
                                 <br />
