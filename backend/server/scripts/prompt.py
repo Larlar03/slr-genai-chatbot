@@ -9,7 +9,7 @@ from langchain.chains import ConversationalRetrievalChain
 
 from scripts import database
 
-dotenv_path = os.getdotenv_path = os.path.join(os.getcwd(), "backend/.env")
+dotenv_path = os.getdotenv_path = os.path.join(os.getcwd(), ".env")
 _ = load_dotenv(dotenv_path)
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
@@ -38,7 +38,7 @@ PROMPT = PromptTemplate.from_template(prompt_template)
 
 def load_vector_store():
     embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
-    db = os.path.join(os.getcwd(), "backend/documents/faiss_db")
+    db = os.path.join(os.getcwd(), "documents/faiss_db")
     vector_store = FAISS.load_local(db, embeddings)
     retriever = vector_store.as_retriever(search_kwargs={"k": 5})
 

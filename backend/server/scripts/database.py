@@ -2,11 +2,12 @@ import os
 from dotenv import load_dotenv
 import pymongo
 
-dotenv_path = os.getdotenv_path = os.path.join(os.getcwd(), "backend/.env")
+dotenv_path = os.getdotenv_path = os.path.join(os.getcwd(), ".env")
 _ = load_dotenv(dotenv_path)
 
 MONGODB_URI = os.environ.get("MONGODB_URI")
-client = pymongo.MongoClient(MONGODB_URI)
+# client = pymongo.MongoClient(MONGODB_URI)
+client = pymongo.MongoClient("mongo", 27017)
 
 dblist = client.list_database_names()
 

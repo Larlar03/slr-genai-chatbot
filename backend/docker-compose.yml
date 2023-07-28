@@ -1,0 +1,17 @@
+# Version of Docker-compose
+version: '3.9'
+services:
+  flask_app:
+    build:
+      context: ./server
+    ports:
+      - '5000:5000'
+    depends_on:
+      - mongo
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/slr
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - 27017:27017
