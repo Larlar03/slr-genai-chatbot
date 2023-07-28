@@ -1,7 +1,7 @@
 # Version of Docker-compose
 version: '3.9'
 services:
-  flask_app:
+  slr-server:
     build:
       context: ./server
     ports:
