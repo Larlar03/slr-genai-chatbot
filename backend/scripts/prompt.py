@@ -55,13 +55,13 @@ def get_qa_chain():
 
 
 def prompt_openai(chatId, message):
-    chat_history = database.get_chat_history(chatId)
-    print(chat_history)
+    history = database.get_chat_history(chatId)
+    # print(chat_history)
     qa_chain = get_qa_chain()
 
     question = message
-    response = qa_chain({"question": question, "chat_history": chat_history})
+    response = qa_chain({"question": question, "chat_history": history})
 
     database.store_chat(id=chatId, question=question, answer=response["answer"])
-    print(response["answer"])
+    print(response)
     return response["answer"]

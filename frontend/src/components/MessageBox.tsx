@@ -8,30 +8,29 @@ const MessageBox = ({ message }: { message: Message }) => {
     return (
         <>
             {message.isSentByUser && (
-                <div className='flex items-end space-x-3 space-y-3'>
-                    <img
-                        src='https://source.unsplash.com/600x600/?colourful'
-                        alt='User Avatar'
-                        className='w-10 h-10 rounded-full'
-                    />
-                    <div className='p-2 bg-gray-100 rounded-lg'>
+                <div className='flex items-end justify-end  space-x-3 space-y-3'>
+                    <div className='p-2 bg-[#f2f6f8] rounded-lg'>
                         <p className='text-gray-600'>{message.content}</p>
                     </div>
                 </div>
             )}
             {!message.isSentByUser && (
-                <div className='w-full flex items-end justify-end space-x-3 space-y-3'>
-                    <div className='p-2 bg-blue-100 rounded-lg'>
+                <div className='w-full flex items-end space-x-3 space-y-3'>
+                    <div>
+                        <div className='w-10 h-10 bg-gradient-to-r from-[#e0c3fc] to-[#8ec5fc] rounded-full mr-2' />
+                    </div>
+                    <div className='p-2 bg-[#ebf5fe] rounded-lg rounded-bl-none'>
                         {/* <p className='text-blue-600'>{message.content}</p> */}
-                        {formattedResponse?.map((line) => {
-                            return line === '' ? <br /> : <p className='text-blue-600'>{line}</p>;
+                        {formattedResponse?.map((line: string, i) => {
+                            return line === '' ? (
+                                <br />
+                            ) : (
+                                <p key={i} className='text-black'>
+                                    {line}
+                                </p>
+                            );
                         })}
                     </div>
-                    <img
-                        src='https://source.unsplash.com/600x600/?kodak'
-                        alt='Bot Avatar'
-                        className='w-10 h-10 rounded-full'
-                    />
                 </div>
             )}
         </>
