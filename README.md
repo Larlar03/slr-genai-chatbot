@@ -5,7 +5,7 @@ SLR is a FReMP stack project. It is a generative AI conversational chatbot that 
 This project was created to experiment with the LLM framework LangChain and OpenAI's API.
 
 ## Screenshots
-![image info](./frontend/src/assets/screenshot-2.png)
+![screenshot of SLR desktop view](./frontend/src/assets/screenshot-2.png)
 
 ## Tech/framework used
 
