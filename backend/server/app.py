@@ -16,11 +16,24 @@ def hello():
 
 @app.route("/prompt", methods=["POST"])
 def post():
-    data = request.get_json()
-    id = data["chatId"]
-    question = data["message"]
-    response = prompt.prompt_openai(id, question)
-    return jsonify({"answer": response})
+    try:
+        data = request.get_json()
+        id = data["chatId"]
+        question = data["message"]
+
+        response = prompt.prompt_openai(id, question)
+
+        return jsonify({"answer": response})
+
+    except KeyError as e:
+        return jsonify({"error": "Invalid request data. Missing key: " + str(e)}), 400
+
+    except Exception as e:
+        return jsonify({"error": "An error occurred: " + str(e)}), 500
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
 
 
 if __name__ == "__main__":
