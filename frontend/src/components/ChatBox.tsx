@@ -43,19 +43,15 @@ const ChatBox = ({ sessionId }: { sessionId: string }) => {
         >
             <div className='p-4 bg-white shadow-lg rounded-lg sm:h-screen sm:w-screen lg:h-auto lg:w-4/6 xl:w-[682px] grid grid-cols-1 grid-rows-[1fr,min-content]'>
                 <div className='flex flex-col mb-4 space-y-6'>
-                    <div className='chat bg-green'>
-                        <div className='flex items-center space-x-4 mb-5 '>
-                            <div className='w-10 h-10 bg-gradient-to-r from-[#e0c3fc] to-[#8ec5fc] rounded-full mr-2' />
-                            <h2 className='text-lg font-semibold'>Single-Lens Reflex Chat</h2>
-                        </div>
-                        <div>
-                            <div className='flex flex-col space-y-2'>
-                                {messages.map((message, index) => {
-                                    return <MessageBox key={index} message={message} />;
-                                })}
-                                {loading && <LoadingMessage />}
-                            </div>
-                        </div>
+                    <div className='flex items-center space-x-4 mb-5 '>
+                        <div className='w-10 h-10 bg-gradient-to-r from-[#e0c3fc] to-[#8ec5fc] rounded-full mr-2' />
+                        <h2 className='text-lg font-semibold'>Single-Lens Reflex Chat</h2>
+                    </div>
+                    <div className='flex flex-col space-y-4 lg:h-[450px] overflow-y-auto'>
+                        {messages.map((message, index) => {
+                            return <MessageBox key={index} message={message} />;
+                        })}
+                        {loading && <LoadingMessage />}
                     </div>
                 </div>
                 <div className='flex items-center mt-4'>
@@ -78,7 +74,7 @@ const ChatBox = ({ sessionId }: { sessionId: string }) => {
                         }}
                     />
                     <button
-                        className='px-4 py-2 ml-2 text-sm font-semibold text-white bg-[#3A59E4] hover:bg-[#667eea] rounded'
+                        className='px-4 py-2 ml-2 text-sm font-semibold text-white bg-[#667eea] hover:bg-[#5C75E6] rounded'
                         disabled={loading}
                         onClick={(event) => {
                             event.preventDefault();
