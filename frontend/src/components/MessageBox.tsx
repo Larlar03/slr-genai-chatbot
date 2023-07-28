@@ -8,24 +8,23 @@ const MessageBox = ({ message }: { message: Message }) => {
     return (
         <>
             {message.isSentByUser && (
-                <div className='flex items-end justify-end  space-x-3 space-y-3'>
-                    <div className='p-2 bg-[#f2f6f8] rounded-lg'>
-                        <p className='text-gray-600'>{message.content}</p>
+                <div className='w-[99%] flex items-end justify-end '>
+                    <div className='bg-[#F8F6F8] rounded-lg p-2'>
+                        <p className='text-gray-900'>{message.content}</p>
                     </div>
                 </div>
             )}
             {!message.isSentByUser && (
-                <div className='w-full flex items-end space-x-3 space-y-3'>
+                <div className='w-[99%] flex flex-row items-end space-x-3 my-4'>
                     <div>
-                        <div className='w-10 h-10 bg-gradient-to-r from-[#e0c3fc] to-[#8ec5fc] rounded-full mr-2' />
+                        <div className='bg-gradient-to-r from-[#e0c3fc] to-[#8ec5fc] w-10 h-10 rounded-full' />
                     </div>
-                    <div className='p-2 bg-[#ebf5fe] rounded-lg rounded-bl-none'>
-                        {/* <p className='text-blue-600'>{message.content}</p> */}
+                    <div className='bg-[#F1F0FF] rounded-lg rounded-bl-none p-2 '>
                         {formattedResponse?.map((line: string, i) => {
                             return line === '' ? (
                                 <br />
                             ) : (
-                                <p key={i} className='text-black'>
+                                <p key={i} className='text-[#252136]'>
                                     {line}
                                 </p>
                             );
