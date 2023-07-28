@@ -15,7 +15,7 @@ const MessageBox = ({ message }: { message: Message }) => {
                 </div>
             )}
             {!message.isSentByUser && (
-                <div className='flex flex-row items-end space-x-3 w-[99%]'>
+                <div className='flex flex-row items-end space-x-3 w-[99%] my-4'>
                     <div>
                         <div className='w-10 h-10 bg-gradient-to-r from-[#e0c3fc] to-[#8ec5fc] rounded-full' />
                     </div>
