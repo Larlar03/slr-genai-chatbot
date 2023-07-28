@@ -10,7 +10,7 @@ export const PromptAi = async (messageString: string, chatId: string, apiUrl: st
     };
 
     const response = await axios.post(apiUrl, requestBody).catch((error) => {
-        console.error(error);
+        console.error('Error making request:', error);
     });
 
     return response?.data.answer;
