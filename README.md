@@ -1,5 +1,5 @@
 ## SLR GenAI Chatbot
-SLR is a FReMP stack project. It is a generative AI conversational chatbot that answers questions to do with photography exposure, lenses and colour.
+SLR is a mini GenAI project. It is a generative AI conversational chatbot that answers questions to do with photography exposure, lenses and colour theory.
 
 ## Motivation
 This project was created to experiment with the LLM framework LangChain and OpenAI's API.
